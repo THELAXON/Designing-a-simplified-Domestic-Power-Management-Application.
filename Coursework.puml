@@ -15,8 +15,8 @@ class Solar_Panel
 class Wind_Power
 class Wind_Turbine
 
-
 interface Householder_Interface
+
 User -> Householder_Interface
 Householder_Interface <|-- bi_directional_inverter
 
@@ -24,11 +24,10 @@ bi_directional_inverter <|-- Renewable_Resources
 bi_directional_inverter <|-- Batteries
 bi_directional_inverter <|-- National_Power_Grid
 
-
 Renewable_Resources <|-- Solar_Power
 Renewable_Resources <|-- Wind_Power
-Solar_Power <|-- Solar_Panel
-Wind_Power <|-- Wind_Turbine
 
+Solar_Power <|-- Solar_Panel
+Wind_Power <|-- Wind_Turbine-
 
 @enduml
