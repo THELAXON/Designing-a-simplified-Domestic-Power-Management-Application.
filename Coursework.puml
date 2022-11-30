@@ -1,33 +1,99 @@
 @startuml
-class User
+class User{
+-name
+-age
+}
 
-class Household
-class bi_directional_inverter
-class clouds_api
-class Heating_controller
+interface Householder_Interface{
++change_Source()
++usage_update()
+}
+
+class Household{
+-energy_usage
+}
+
+class bi_directional_inverter{
+-current_power_source
++cloud_update()
+}
+class clouds_api{
+- current_use_watts : int
++ usage_update() : int
+}
+
+class Heating_controller{
+-current_state : boolean
++turn_on() : boolean
++turn_off() : boolean
+}
+
+class Electrical_appliances{
+-current_state : boolean
++consumption_per_hour()
++turn_on_appliance() : boolean
++turn_off_appliance() : boolean
+}
+
+class National_Power_Grid{
+-grid_energy_generated
++generate_power() : boolean
+}
+
+class Batteries{
+-battery_percentage : int
++currentbatterypercentage() : int
++charged()
+}
+class Renewable_Resources{
+-renewable_energy_generated
++generate_power() : boolean
+}
+
+class Solar_Power{
+-solarpower_generated
+}
+
+class Wind_Power{
+-windpower_generated
+}
+class Solar_Panel{
+-solar_panel_id
+}
+class Wind_Turbine{
+-wind_turbine_id
+}
+
+class application{
++daily_usage(:Householder Interface)
++weekly_usage()
++monthly_usage()
+}
+class electric_kettle{
+}
 class Immersion_water_heater
-class Electrical_appliances
-class National_Power_Grid
-class Batteries
-class Renewable_Resources
-class Solar_Power
-class Solar_Panel
-class Wind_Power
-class Wind_Turbine
-
-interface Householder_Interface
 
 User -> Householder_Interface
 Householder_Interface <|-- bi_directional_inverter
+application ..> Householder_Interface
 
-bi_directional_inverter <|-- Renewable_Resources
-bi_directional_inverter <|-- Batteries
-bi_directional_inverter <|-- National_Power_Grid
+bi_directional_inverter --> clouds_api
+clouds_api "1" -- "1" Householder_Interface
+bi_directional_inverter -- Renewable_Resources
+bi_directional_inverter -- Batteries
+bi_directional_inverter -- National_Power_Grid
 
+Householder_Interface --> Heating_controller
+Heating_controller <|-- Immersion_water_heater
+
+Householder_Interface <|-- Household
+Household --> Electrical_appliances
+Electrical_appliances <|-- electric_kettle
 Renewable_Resources <|-- Solar_Power
 Renewable_Resources <|-- Wind_Power
+Solar_Power "1" <|--  "Many" Solar_Panel
+Wind_Power"1" <|-- "Many" Wind_Turbine
+Batteries --> Immersion_water_heater
 
-Solar_Power <|-- Solar_Panel
-Wind_Power <|-- Wind_Turbine-
 
 @enduml
