@@ -1,99 +1,102 @@
 @startuml
-class User{
--name
--age
-}
+class User
 
-interface Householder_Interface{
+interface HouseInterface{
 +change_Source()
 +usage_update()
 }
-
-class Household{
--energy_usage
+interface PowerSource{
++Power_Generated() : int
+}
+interface PowerConsumer{
++Power_Usage() : int
 }
 
-class bi_directional_inverter{
--current_power_source
-+cloud_update()
-}
-class clouds_api{
+class CloudApi{
 - current_use_watts : int
 + usage_update() : int
++ monthly_report() : void
++ weekly_report() : void
++ daily_report() : void
 }
 
-class Heating_controller{
+class BiDirectionalInverter{
+-current_power_source
+-Timer
++cloud_update()
++getstatus() : boolean
+}
+class NationalPowerGrid{
+-grid_energy_generated
++generate_power() : boolean
+}
+
+interface RenewableResources{
++generate_power() : boolean
++not_generating() : boolean
+}
+class HeatingController{
 -current_state : boolean
 +turn_on() : boolean
 +turn_off() : boolean
 }
 
-class Electrical_appliances{
+class HouseholdAppliances{
 -current_state : boolean
 +consumption_per_hour()
 +turn_on_appliance() : boolean
 +turn_off_appliance() : boolean
 }
 
-class National_Power_Grid{
--grid_energy_generated
-+generate_power() : boolean
-}
 
 class Batteries{
 -battery_percentage : int
 +currentbatterypercentage() : int
 +charged()
 }
-class Renewable_Resources{
--renewable_energy_generated
-+generate_power() : boolean
-}
 
-class Solar_Power{
+
+class SolarPower{
 -solarpower_generated
++total_solarpower() : int
 }
 
-class Wind_Power{
+class WindPower{
 -windpower_generated
++total_windpower() : int
 }
-class Solar_Panel{
+class SolarPanel{
 -solar_panel_id
++power_generated():
 }
-class Wind_Turbine{
+class WindTurbine{
 -wind_turbine_id
++power_generated():
 }
 
-class application{
-+daily_usage(:Householder Interface)
-+weekly_usage()
-+monthly_usage()
-}
-class electric_kettle{
-}
-class Immersion_water_heater
+class ElectricKettle
+class ImmersionWaterHeater
 
-User -> Householder_Interface
-Householder_Interface <|-- bi_directional_inverter
-application ..> Householder_Interface
-
-bi_directional_inverter --> clouds_api
-clouds_api "1" -- "1" Householder_Interface
-bi_directional_inverter -- Renewable_Resources
-bi_directional_inverter -- Batteries
-bi_directional_inverter -- National_Power_Grid
-
-Householder_Interface --> Heating_controller
-Heating_controller <|-- Immersion_water_heater
-
-Householder_Interface <|-- Household
-Household --> Electrical_appliances
-Electrical_appliances <|-- electric_kettle
-Renewable_Resources <|-- Solar_Power
-Renewable_Resources <|-- Wind_Power
-Solar_Power "1" <|--  "Many" Solar_Panel
-Wind_Power"1" <|-- "Many" Wind_Turbine
-Batteries --> Immersion_water_heater
+User -- HouseInterface
+HouseInterface -> CloudApi
+HouseInterface <|-- BiDirectionalInverter
+CloudApi"1" --- "1"BiDirectionalInverter
+BiDirectionalInverter --> PowerSource
+BiDirectionalInverter --> PowerConsumer
+RenewableResources <|.. SolarPower 
+RenewableResources <|.. WindPower 
+SolarPower "1" --  "0..*" SolarPanel
+WindPower"1" -- "0..*" WindTurbine
 
 
+PowerSource <|.. RenewableResources
+PowerSource <|.. NationalPowerGrid
+PowerSource <|.. Batteries
+PowerConsumer <|.. HouseholdAppliances
+PowerConsumer <|.. Batteries
+PowerConsumer <|.. NationalPowerGrid
+PowerConsumer <|.. HeatingController
+HouseholdAppliances"1" <|.. "Many"ElectricKettle
+HeatingController <|.. ImmersionWaterHeater
+Batteries ..> ImmersionWaterHeater
 @enduml
